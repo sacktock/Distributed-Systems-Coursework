@@ -76,7 +76,7 @@ def home_page_display(user_code):
     elif resp == '2':
         order_page_display(user_code)
     else:
-        sys.exit()
+        quit()
 
 def menu_page_display(user_code):
     while True:
@@ -84,59 +84,48 @@ def menu_page_display(user_code):
         if response:
         # parse json response
             try:
-                response = json.loads(response)
+                if response['valid'] == 1:
+                    lst = ['A', 'B', 'C', 'E', 'D', 'F', 'G']
+                    menu_items = response['menu']
+                    print('--------')
+                    print()
+                    print('OUR MENU')
+                    print()
+                    print('--------')
+                    print('--------')
+                    print()
+                    for i in range(0, len(menu_items)):
+                        print(lst[i]+'. ' + menu_items[i]['item'], ' Price: '+str(menu_items[i]['price']))
+                    print()
+                    print('--------')
+                    print('--------')
+                    print()
+                    print('PRESS {ITEM LETTER} + {ENTER} TO START AN ORDER')
+                    print('1. PRESS 1 + {ENTER} TO RETURN TO THE HOME PAGE')
+                    print('2. PRESS 2 + {ENTER} TO EXIT')
+
+                    resp = input()
+                    while resp not in (['1','2'] + lst):
+                        resp = input('Invalid Choice ... try again ... \n')
+
+                    if resp in lst:
+                        index = lst.index(resp)
+                        make_order_page_display(user_code,menu_items[index]['item'], menu_items[index]['price'])
+                        return
+                    elif resp == '1':
+                        return
+                    else:
+                        quit()
+                elif response['valid'] == 0:
+                    # server side error
+                    print(response['error']+' ... ')
+                    retry =input('Try again : [Y/n] \n')
+                    if retry == 'Y':
+                        continue
+                    else:
+                        print('returning to the home page ...')
+                        return
             except:
-                # server doesn't respond with a json message
-                print('server responded badly ... ')
-                retry =input('Try again : [Y/n] \n')
-                if retry == 'Y':
-                    continue
-                else:
-                    print('ORDER SUCCESSFULLY CANCELLED')
-                    print('returning to the home page ...')
-                    return
-            if response['valid'] == 1:
-                lst = ['A', 'B', 'C', 'E', 'D', 'F', 'G']
-                menu_items = response['menu']
-                print('--------')
-                print()
-                print('OUR MENU')
-                print()
-                print('--------')
-                print('--------')
-                print()
-                for i in range(0, len(menu_items)):
-                    print(lst[i]+'. ' + menu_items[i]['item'], ' Price: '+str(menu_items[i]['price']))
-                print()
-                print('--------')
-                print('--------')
-                print()
-                print('PRESS {ITEM LETTER} + {ENTER} TO START AN ORDER')
-                print('1. PRESS 1 + {ENTER} TO RETURN TO THE HOME PAGE')
-                print('2. PRESS 2 + {ENTER} TO EXIT')
-
-                resp = input()
-                while resp not in (['1','2'] + lst):
-                    resp = input('Invalid Choice ... try again ... \n')
-
-                if resp in lst:
-                    index = lst.index(resp)
-                    make_order_page_display(user_code,menu_items[index]['item'], menu_items[index]['price'])
-                    return
-                elif resp == '1':
-                    return
-                else:
-                    sys.exit()
-            elif response['valid'] == 0:
-                # server side error
-                print(response['error']+' error ... ')
-                retry =input('Try again : [Y/n] \n')
-                if retry == 'Y':
-                    continue
-                else:
-                    print('returning to the home page ...')
-                    return
-            else:
                 # server responded with unexpected json
                 print('server responded badly with no valid bit ... ')
                 retry =input('Try again : [Y/n] \n')
@@ -161,61 +150,51 @@ def order_page_display(user_code):
         if response:
         # parse json response
             try:
-                response = json.loads(response)
-            except:
-                # server doesn't respond with a json message
-                print('server responded badly ... ')
-                retry =input('Try again : [Y/n] \n')
-                if retry == 'Y':
-                    continue
-                else:
-                    print('returning to the home page ...')
-                    return
-            if response['valid'] == 1:
-                orders = response['orders']
-                print('-----------')
-                print()
-                print('YOUR ORDERS')
-                print()
-                print('-----------')
-                print()
-                print('-----------')
-                print('-----------')
-                print() 
-                if orders == []:
-                    print('NO RECENT ORDERS')
-                for order in orders:
-                    print('ORDER AT '+order['time_stamp']+' - '+order['item']+', Price: '+str(order['price']))
-                print()
-                print('-----------')
-                print('-----------')
-                print()
-                print('user: '+ user_code)
-                print()
-                print('1. PRESS 1 + {ENTER} TO RETURN TO THE HOME PAGE')
-                print('2. PRESS 2 + {ENTER} TO REFRESH THIS PAGE')
-                print('3. PRESS 3 + {ENTER} TO EXIT')
+                if response['valid'] == 1:
+                    orders = response['orders']
+                    print('-----------')
+                    print()
+                    print('YOUR ORDERS')
+                    print()
+                    print('-----------')
+                    print()
+                    print('-----------')
+                    print('-----------')
+                    print() 
+                    if orders == []:
+                        print('NO RECENT ORDERS')
+                    for order in orders:
+                        print('ORDER AT '+order['time_stamp']+' - '+order['item']+', Price: '+str(order['price']))
+                    print()
+                    print('-----------')
+                    print('-----------')
+                    print()
+                    print('user: '+ user_code)
+                    print()
+                    print('1. PRESS 1 + {ENTER} TO RETURN TO THE HOME PAGE')
+                    print('2. PRESS 2 + {ENTER} TO REFRESH THIS PAGE')
+                    print('3. PRESS 3 + {ENTER} TO EXIT')
 
-                resp = input()
-                while resp not in ['1','2','3']:
-                    resp = input('Invalid Choice ... try again ... \n')
-    
-                if resp == '1':
-                    return
-                elif resp == '2':
-                    continue
-                else:
-                    sys.exit()
-            elif response['valid'] == 0:
-                # server side error
-                print(response['error']+' error ... ')
-                retry =input('Try again : [Y/n] \n')
-                if retry == 'Y':
-                    continue
-                else:
-                    print('returning to the home page ...')
-                    return
-            else:
+                    resp = input()
+                    while resp not in ['1','2','3']:
+                        resp = input('Invalid Choice ... try again ... \n')
+        
+                    if resp == '1':
+                        return
+                    elif resp == '2':
+                        continue
+                    else:
+                        quit()
+                elif response['valid'] == 0:
+                    # server side error
+                    print(response['error']+' ... ')
+                    retry =input('Try again : [Y/n] \n')
+                    if retry == 'Y':
+                        continue
+                    else:
+                        print('returning to the home page ...')
+                        return
+            except:
                 # server responded with unexpected json
                 print('server responded badly with no valid bit ... ')
                 retry =input('Try again : [Y/n] \n')
@@ -250,53 +229,40 @@ def make_order_page_display(user_code,item, price):
     while True:
         response = make_is_valid_postcode_request(post_code)
         if response:
-            try:
-                # parse json response
-                response = json.loads(response)
-            except:
-                # server doesn't respond with a json message
-                print('server responded badly ... ')
-                retry =input('Try again : [Y/n] \n')
-                if retry == 'Y':
-                    continue
-                else:
-                    print('ORDER SUCCESSFULLY CANCELLED')
-                    print('returning to the home page ...')
-                    return
-                
-            if response['valid'] == 1:
-                print('address found at this post code ... ')
-                print(response['address']+' '+ post_code)
-                confirm = input('Is this your address? [Y/n]\n')
-                while confirm not in ['Y','n']:
-                    confirm = input('Invalid Choice ... try again ... \n')
-                if confirm == 'Y':
-                    address = response['address']
-                    break
-                else:
+            try:    
+                if response['valid'] == 1:
+                    print('address found at this post code ... ')
+                    print(response['address']+' '+ post_code)
+                    confirm = input('Is this your address? [Y/n]\n')
+                    while confirm not in ['Y','n']:
+                        confirm = input('Invalid Choice ... try again ... \n')
+                    if confirm == 'Y':
+                        address = response['address']
+                        break
+                    else:
+                        retry =input('Try again : [Y/n] \n')
+                        if retry == 'Y':
+                            continue
+                        else:
+                            print('ORDER SUCCESSFULLY CANCELLED')
+                            print('returning to the home page ...')
+                            return
+                        
+                elif response['valid'] == 0:
+                    # server side error
+                    print(response['error']+' ... ')
                     retry =input('Try again : [Y/n] \n')
                     if retry == 'Y':
+                        if response['error'] == 'Not a valid post code':
+                            post_code = input('please enter a valid post code ... \n')
                         continue
                     else:
                         print('ORDER SUCCESSFULLY CANCELLED')
                         print('returning to the home page ...')
                         return
-                    
-            elif response['valid'] == 0:
-                # server side error
-                print(response['error']+' error ... ')
-                retry =input('Try again : [Y/n] \n')
-                if retry == 'Y':
-                    if response['error'] == 'Not a valid post code':
-                        post_code = input('please enter a valid post code ... \n')
-                    continue
-                else:
-                    print('ORDER SUCCESSFULLY CANCELLED')
-                    print('returning to the home page ...')
-                    return
-            else:
+            except:
                 # server responded with unexpected json
-                print('server responded badly with no valid bit ... ')
+                print('server responded badly ... ')
                 retry =input('Try again : [Y/n] \n')
                 if retry == 'Y':
                     continue
@@ -330,36 +296,23 @@ def make_order_page_display(user_code,item, price):
             response = make_order_request(user_code ,item, price, post_code)
             if response:
                 try:
-                    # parse json response
-                    response = json.loads(response)
+                    if response['valid'] == 1:
+                        print('ORDER CONFIRMED')
+                        break
+                        
+                    elif response['valid'] == 0:
+                        # server side error
+                        print(response['error']+' ... ')
+                        retry =input('Try again : [Y/n] \n')
+                        if retry == 'Y':
+                            continue
+                        else:
+                            print('ORDER SUCCESSFULLY CANCELLED')
+                            print('returning to the home page ...')
+                            return
                 except:
-                    # server doesn't respond with a json message
-                    print('server responded badly ... ')
-                    retry =input('Try again : [Y/n] \n')
-                    if retry == 'Y':
-                        continue
-                    else:
-                        print('ORDER SUCCESSFULLY CANCELLED')
-                        print('returning to the home page ...')
-                        return
-                
-                if response['valid'] == 1:
-                    print('ORDER CONFIRMED')
-                    break
-                    
-                elif response['valid'] == 0:
-                    # server side error
-                    print(response['error']+' error ... ')
-                    retry =input('Try again : [Y/n] \n')
-                    if retry == 'Y':
-                        continue
-                    else:
-                        print('ORDER SUCCESSFULLY CANCELLED')
-                        print('returning to the home page ...')
-                        return
-                else:
                     # server responded with unexpected json
-                    print('server responded badly with no valid bit ... ')
+                    print('server responded badly ... ')
                     retry =input('Try again : [Y/n] \n')
                     if retry == 'Y':
                         continue
@@ -395,7 +348,7 @@ def make_order_page_display(user_code,item, price):
         order_page_display(user_code)
         return
     else:
-        sys.exit()
+        quit()
     
 # enter some arbitrary user code     
 print()
@@ -413,40 +366,29 @@ while True:
     response = make_get_motd_request()
     if response:
         try:
-            # parse json response
-            response = json.loads(response)
+            if response['valid'] == 1:
+                motd = response['motd']
+                while True:
+                    home_page_display(user_code)
+                break
+            elif response['valid'] == 0:
+                # server side error
+                print(response['error']+' ... ')
+                retry =input('Try again : [Y/n] \n')
+                if retry == 'Y':
+                    continue
+                else:
+                    print('exiting ...')
+                    quit()
         except:
-            # server doesn't respond with a json message
+            # server responded with unexpected json
             print('server responded badly ... ')
             retry =input('Try again : [Y/n] \n')
             if retry == 'Y':
                 continue
             else:
                 print('exiting ...')
-                sys.exit()
-        if response['valid'] == 1:
-            motd = response['motd']
-            while True:
-                home_page_display(user_code)
-            break
-        elif response['valid'] == 0:
-            # server side error
-            print(response['error']+' error ... ')
-            retry =input('Try again : [Y/n] \n')
-            if retry == 'Y':
-                continue
-            else:
-                print('exiting ...')
-                sys.exit()
-        else:
-            # server responded with unexpected json
-            print('server responded badly with no valid bit ... ')
-            retry =input('Try again : [Y/n] \n')
-            if retry == 'Y':
-                continue
-            else:
-                print('exiting ...')
-                sys.exit()
+                quit()
     else:
         # server didn't respond with anything
         print('nothing received from the server ... ')
@@ -455,4 +397,4 @@ while True:
             continue
         else:
             print('exiting ...')
-            sys.exit()
+            quit()

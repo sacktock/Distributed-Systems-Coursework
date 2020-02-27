@@ -1,24 +1,114 @@
 import socket
 import sys
 import Pyro4
+import json
+
+server_namespaces = ['replica.server1', 'replica.server2', 'replica.server3']
+
+# python -m Pyro4.naming
 
 @Pyro4.expose
 class RequestHandler(object):
 
     def get_menu(self):
-        return '{ "request" : "get_menu", "valid" : 1, "menu" : [ {"item" : "CHICKEN WINGS", "price" : 11.85}, {"item" : "FISH FINGERS", "price" : 10.95} ] }'
+        print('processing a get_menu request ... ')
+        response = ''
+        for namespace in server_namespaces:
+            try:
+                request_handler = Pyro4.Proxy("PYRONAME:"+namespace)    
+                response = request_handler.get_menu()
+                if response['valid'] == 1:
+                    break
+                else:
+                    continue
+            except:
+                response = ''
+                continue
+
+        if response:
+            return response
+        else:
+            return json.loads('{ "request" : "get_menu", "valid" : 0, "error" : "server side error occured" }')
 
     def make_order(self, user_code, item, price, post_code):
-        return '{ "request" : "make_order", "valid" : 1}'
+        print('processing a make_order request ... ')
+        response = ''
+        for namespace in server_namespaces:
+            try:
+                request_handler = Pyro4.Proxy("PYRONAME:"+namespace)    
+                response = request_handler.make_order(user_code, item, price, post_code)
+                if response['valid'] == 1:
+                    break
+                else:
+                    continue
+            except:
+                response = ''
+                continue
+
+        if response:
+            return response
+        else:
+            return json.loads('{ "request" : "make_order", "valid" : 0, "error" : "server side error occured" }')
 
     def get_orders(self, user_code):
-        return '{ "request" : "get_orders", "valid" : 1, "orders" : [ {"item" : "CHICKEN WINGS", "price" : 11.85, "time_stamp" : "11:59 AM 14/02/2020" } ] }'
+        print('processing a get_orders request ... ')
+        response = ''
+        for namespace in server_namespaces:
+            try:
+                request_handler = Pyro4.Proxy("PYRONAME:"+namespace)    
+                response = request_handler.get_orders(user_code)
+                if response['valid'] == 1:
+                    break
+                else:
+                    continue
+            except:
+                response = ''
+                continue
+
+        if response:
+            return response
+        else:
+            return json.loads('{ "request" : "get_orders", "valid" : 0, "error" : "server side error occured" }')
 
     def get_motd(self):
-        return '{ "request" : "get_motd", "valid" : 1, "motd" : "Weclome to Just Hungry UK!" }'
+        print('processing a get_motd request ... ')
+        response = ''
+        for namespace in server_namespaces:
+            try:
+                request_handler = Pyro4.Proxy("PYRONAME:"+namespace)    
+                response = request_handler.get_motd()
+                if response['valid'] == 1:
+                    break
+                else:
+                    continue
+            except:
+                response = ''
+                continue
+
+        if response:
+            return response
+        else:
+            return json.loads('{ "request" : "get_motd", "valid" : 0, "error" : "server side error occured" }')
 
     def is_valid_postcode(self, post_code):
-        return '{ "request" : "is_valid_postcode", "valid" : 1, "post_code" : "DH1 1JN", "address" : "1 Renny Street" }'
+        print('processing a is_valid_postcode request ... ')
+        response = ''
+        for namespace in server_namespaces:
+            try:
+                request_handler = Pyro4.Proxy("PYRONAME:"+namespace)    
+                response = request_handler.is_valid_postcode(post_code)
+                if response['valid'] == 1:
+                    break
+                else:
+                    continue
+            except:
+                response = ''
+                continue
+
+        if response:
+            return response
+        else:
+            return json.loads('{ "request" : "is_valid_postcode", "valid" : 0, "error" : "server side error occured" }')
         
 
 daemon = Pyro4.Daemon()                # make a Pyro daemon
