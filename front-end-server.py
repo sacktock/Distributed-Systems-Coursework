@@ -14,6 +14,7 @@ class RequestHandler(object):
         print('processing a get_menu request ... ')
         response = ''
         for namespace in server_namespaces:
+            print('trying', namespace)
             try:
                 request_handler = Pyro4.Proxy("PYRONAME:"+namespace)    
                 response = request_handler.get_menu()
@@ -26,14 +27,17 @@ class RequestHandler(object):
                 continue
 
         if response:
+            print('sending response back ... ')
             return response
         else:
+            print('sending error back ... ')
             return json.loads('{ "request" : "get_menu", "valid" : 0, "error" : "server side error occured" }')
 
     def make_order(self, user_code, item, price, post_code):
         print('processing a make_order request ... ')
         response = ''
         for namespace in server_namespaces:
+            print('trying', namespace)
             try:
                 request_handler = Pyro4.Proxy("PYRONAME:"+namespace)    
                 response = request_handler.make_order(user_code, item, price, post_code)
@@ -46,14 +50,17 @@ class RequestHandler(object):
                 continue
 
         if response:
+            print('sending response back ... ')
             return response
         else:
+            print('sending error back ... ')
             return json.loads('{ "request" : "make_order", "valid" : 0, "error" : "server side error occured" }')
 
     def get_orders(self, user_code):
         print('processing a get_orders request ... ')
         response = ''
         for namespace in server_namespaces:
+            print('trying', namespace)
             try:
                 request_handler = Pyro4.Proxy("PYRONAME:"+namespace)    
                 response = request_handler.get_orders(user_code)
@@ -66,14 +73,17 @@ class RequestHandler(object):
                 continue
 
         if response:
+            print('sending response back ... ')
             return response
         else:
+            print('sending error back ... ')
             return json.loads('{ "request" : "get_orders", "valid" : 0, "error" : "server side error occured" }')
 
     def get_motd(self):
         print('processing a get_motd request ... ')
         response = ''
         for namespace in server_namespaces:
+            print('trying', namespace)
             try:
                 request_handler = Pyro4.Proxy("PYRONAME:"+namespace)    
                 response = request_handler.get_motd()
@@ -86,14 +96,17 @@ class RequestHandler(object):
                 continue
 
         if response:
+            print('sending response back ... ')
             return response
         else:
+            print('sending error back ... ')
             return json.loads('{ "request" : "get_motd", "valid" : 0, "error" : "server side error occured" }')
 
     def is_valid_postcode(self, post_code):
         print('processing a is_valid_postcode request ... ')
         response = ''
         for namespace in server_namespaces:
+            print('trying', namespace)
             try:
                 request_handler = Pyro4.Proxy("PYRONAME:"+namespace)    
                 response = request_handler.is_valid_postcode(post_code)
@@ -106,8 +119,10 @@ class RequestHandler(object):
                 continue
 
         if response:
+            print('sending response back ... ')
             return response
         else:
+            print('sending error back ... ')
             return json.loads('{ "request" : "is_valid_postcode", "valid" : 0, "error" : "server side error occured" }')
         
 

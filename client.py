@@ -164,7 +164,7 @@ def order_page_display(user_code):
                     if orders == []:
                         print('NO RECENT ORDERS')
                     for order in orders:
-                        print('ORDER AT '+order['time_stamp']+' - '+order['item']+', Price: '+str(order['price']))
+                        print('ORDER AT '+order['time_stamp']+' TO '+order['post_code']+' - '+order['item']+', Price: '+str(order['price']))
                     print()
                     print('-----------')
                     print('-----------')
