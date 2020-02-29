@@ -74,11 +74,6 @@ class RequestHandler(object):
         print('sending response back ...') 
         return json.loads('{ "request" : "get_motd", "valid" : 1, "motd" : "'+motd+'" }')
 
-    def is_valid_postcode(self, post_code):
-        print('processing a is_valid_postcode request ... ')
-        print('sending response back ...')
-        return json.loads('{ "request" : "is_valid_postcode", "valid" : 1, "post_code" : "DH1 1JN", "address" : "1 Renny Street" }')
-
 daemon = Pyro4.Daemon()                # make a Pyro daemon
 ns = Pyro4.locateNS()                  # find the name server
 uri = daemon.register(RequestHandler)   # register the greeting maker as a Pyro object

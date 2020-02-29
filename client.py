@@ -232,28 +232,13 @@ def make_order_page_display(user_code,item, price):
             try:    
                 if response['valid'] == 1:
                     print('address found at this post code ... ')
-                    print(response['address']+' '+ post_code)
-                    confirm = input('Is this your address? [Y/n]\n')
-                    while confirm not in ['Y','n']:
-                        confirm = input('Invalid Choice ... try again ... \n')
-                    if confirm == 'Y':
-                        address = response['address']
-                        break
-                    else:
-                        retry =input('Try again : [Y/n] \n')
-                        if retry == 'Y':
-                            continue
-                        else:
-                            print('ORDER SUCCESSFULLY CANCELLED')
-                            print('returning to the home page ...')
-                            return
-                        
+                    break
                 elif response['valid'] == 0:
                     # server side error
                     print(response['error']+' ... ')
                     retry =input('Try again : [Y/n] \n')
                     if retry == 'Y':
-                        if response['error'] == 'Not a valid post code':
+                        if response['error'] == 'Invalid postcode':
                             post_code = input('please enter a valid post code ... \n')
                         continue
                     else:

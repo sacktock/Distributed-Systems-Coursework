@@ -2,6 +2,7 @@ import socket
 import sys
 import Pyro4
 import json
+import requests
 
 server_namespaces = ['replica.server1', 'replica.server2', 'replica.server3']
 
@@ -104,28 +105,19 @@ class RequestHandler(object):
 
     def is_valid_postcode(self, post_code):
         print('processing a is_valid_postcode request ... ')
-        response = ''
-        for namespace in server_namespaces:
-            print('trying', namespace)
-            try:
-                request_handler = Pyro4.Proxy("PYRONAME:"+namespace)    
-                response = request_handler.is_valid_postcode(post_code)
-                if response['valid'] == 1:
-                    break
-                else:
-                    continue
-            except:
-                response = ''
-                continue
-
-        if response:
-            print('sending response back ... ')
-            return response
-        else:
+        try:
+            print('making web service request ... ')
+            response = requests.get('https://api.postcodes.io/postcodes/'+post_code).json()
+            if response['status'] == 200:
+                print('sending response back ... ')
+                return json.loads('{ "request" : "is_valid_postcode", "valid" : 1 }')
+            else:
+                print('sending error back ... ')
+                return json.loads('{ "request" : "is_valid_postcode", "valid" : 0, "error" : "'+response['error']+'" }')
+        except:
             print('sending error back ... ')
-            return json.loads('{ "request" : "is_valid_postcode", "valid" : 0, "error" : "server side error occured" }')
+            return json.loads('{ "request" : "is_valid_postcode", "valid" : 0, "error" : "could not access webservice" }')
         
-
 daemon = Pyro4.Daemon()                # make a Pyro daemon
 ns = Pyro4.locateNS()                  # find the name server
 uri = daemon.register(RequestHandler)   # register the greeting maker as a Pyro object
