@@ -3,7 +3,12 @@ import sys
 import json
 import Pyro4
 
+####################################################
+# Function definitions
+####################################################
+
 def make_get_menu_request():
+    # invoke the get_menu method in the front end server
     print()
     print('fetching menu ... ')
     try:
@@ -13,6 +18,7 @@ def make_get_menu_request():
         return ''
 
 def make_get_orders_request(user_code):
+    # invoke the get_orders method in the front end server
     print()
     print('fetching orders ... ')
     try:
@@ -22,6 +28,7 @@ def make_get_orders_request(user_code):
         return ''
 
 def make_order_request(user_code ,item, price, post_code):
+    # invoke the make_order method in the front end server
     print()
     print('processing order ... ')
     try:
@@ -31,6 +38,7 @@ def make_order_request(user_code ,item, price, post_code):
         return ''
 
 def make_get_motd_request():
+    # invoke the get_motd method in the front end server
     print()
     print('accessing server ... ')
     try:
@@ -40,6 +48,7 @@ def make_get_motd_request():
         return ''
 
 def make_is_valid_postcode_request(post_code):
+    # invoke the is_valid_postcode method in the front end server
     print()
     print('processing post code ... ')
     try:
@@ -49,6 +58,7 @@ def make_is_valid_postcode_request(post_code):
         return ''
     
 def home_page_display(user_code):
+    # display the home page
     print('------------------------')
     print('========================')
     print('------------------------')
@@ -80,11 +90,12 @@ def home_page_display(user_code):
 
 def menu_page_display(user_code):
     while True:
+        # make server request
         response = make_get_menu_request()
         if response:
-        # parse json response
             try:
-                if response['valid'] == 1:
+                if response['valid'] == 1: # if request is successful
+                    # display the menu page
                     lst = ['A', 'B', 'C', 'E', 'D', 'F', 'G']
                     menu_items = response['menu']
                     print('--------')
@@ -94,7 +105,7 @@ def menu_page_display(user_code):
                     print('--------')
                     print('--------')
                     print()
-                    for i in range(0, len(menu_items)):
+                    for i in range(0, len(menu_items)): # display each item on the menu
                         print(lst[i]+'. ' + menu_items[i]['item'], ' Price: '+str(menu_items[i]['price']))
                     print()
                     print('--------')
@@ -105,10 +116,10 @@ def menu_page_display(user_code):
                     print('2. PRESS 2 + {ENTER} TO EXIT')
 
                     resp = input()
-                    while resp not in (['1','2'] + lst):
+                    while resp not in (['1','2'] + lst): # invalid choice
                         resp = input('Invalid Choice ... try again ... \n')
 
-                    if resp in lst:
+                    if resp in lst: # choice is in the menu
                         index = lst.index(resp)
                         make_order_page_display(user_code,menu_items[index]['item'], menu_items[index]['price'])
                         return
@@ -116,19 +127,19 @@ def menu_page_display(user_code):
                         return
                     else:
                         sys.exit()
-                elif response['valid'] == 0:
+                elif response['valid'] == 0: # if unsuccessful request
                     # server side error
                     print(response['error']+' ... ')
-                    retry =input('Try again : [Y/n] \n')
+                    retry =input('Try again : [Y/n] \n') # prompt try again
                     if retry == 'Y':
                         continue
                     else:
                         print('returning to the home page ...')
                         return
-            except:
-                # server responded with unexpected json
+            except KeyError:
+                # server response is erroneus
                 print('server responded badly with no valid bit ... ')
-                retry =input('Try again : [Y/n] \n')
+                retry =input('Try again : [Y/n] \n') # prompt try again
                 if retry == 'Y':
                     continue
                 else:
@@ -137,7 +148,7 @@ def menu_page_display(user_code):
         else:
             # server didn't respond with anything
             print('nothing received from the server ... ')
-            retry =input('Try again : [Y/n] \n')
+            retry =input('Try again : [Y/n] \n') # prompt try again
             if retry == 'Y':
                 continue
             else:
@@ -146,11 +157,12 @@ def menu_page_display(user_code):
     
 def order_page_display(user_code):
     while True:
+        # make server request
         response = make_get_orders_request(user_code)
         if response:
-        # parse json response
             try:
-                if response['valid'] == 1:
+                if response['valid'] == 1: # if request is successful
+                    # display the order page
                     orders = response['orders']
                     print('-----------')
                     print()
@@ -163,7 +175,7 @@ def order_page_display(user_code):
                     print() 
                     if orders == []:
                         print('NO RECENT ORDERS')
-                    for order in orders:
+                    for order in orders: # display each order
                         print('ORDER AT '+order['time_stamp']+' TO '+order['post_code']+' - '+order['item']+', Price: '+str(order['price']))
                     print()
                     print('-----------')
@@ -176,7 +188,7 @@ def order_page_display(user_code):
                     print('3. PRESS 3 + {ENTER} TO EXIT')
 
                     resp = input()
-                    while resp not in ['1','2','3']:
+                    while resp not in ['1','2','3']: # invalid choice
                         resp = input('Invalid Choice ... try again ... \n')
         
                     if resp == '1':
@@ -185,19 +197,19 @@ def order_page_display(user_code):
                         continue
                     else:
                         sys.exit()
-                elif response['valid'] == 0:
+                elif response['valid'] == 0: # if request is unsuccessful
                     # server side error
                     print(response['error']+' ... ')
-                    retry =input('Try again : [Y/n] \n')
+                    retry =input('Try again : [Y/n] \n') # prompt try again
                     if retry == 'Y':
                         continue
                     else:
                         print('returning to the home page ...')
                         return
-            except:
-                # server responded with unexpected json
+            except KeyError:
+                # server response is erroneus
                 print('server responded badly with no valid bit ... ')
-                retry =input('Try again : [Y/n] \n')
+                retry =input('Try again : [Y/n] \n') # prompt try again
                 if retry == 'Y':
                     continue
                 else:
@@ -206,7 +218,7 @@ def order_page_display(user_code):
         else:
             # server didn't respond with anything
             print('nothing received from the server ... ')
-            retry =input('Try again : [Y/n] \n')
+            retry =input('Try again : [Y/n] \n') # prompt try again
             if retry == 'Y':
                 continue
             else:
@@ -214,6 +226,7 @@ def order_page_display(user_code):
                 return
 
 def make_order_page_display(user_code,item, price):
+    # display the make order page
     print('---------------------')
     print()
     print('ORDERING - '+item)
@@ -227,41 +240,45 @@ def make_order_page_display(user_code,item, price):
     post_code = input('please enter your postcode below ... \n')
     address = ''
     while True:
+        # make server request
         response = make_is_valid_postcode_request(post_code)
         if response:
             try:    
-                if response['valid'] == 1:
+                if response['valid'] == 1: # if the request is successful
                     print('address found at this post code ... ')
                     break
-                elif response['valid'] == 0:
+                elif response['valid'] == 0: # if the request is unsuccessful
                     # server side error
                     print(response['error']+' ... ')
-                    retry =input('Try again : [Y/n] \n')
+                    retry =input('Try again : [Y/n] \n') # prompt try again
                     if retry == 'Y':
-                        if response['error'] == 'Invalid postcode':
-                            post_code = input('please enter a valid post code ... \n')
+                        if response['error'] == 'Invalid postcode': # if invalid postcode
+                            post_code = input('please enter a valid post code ... \n') # ask for a valid postcode
                         continue
                     else:
+                        # cancel order
                         print('ORDER SUCCESSFULLY CANCELLED')
                         print('returning to the home page ...')
                         return
-            except:
-                # server responded with unexpected json
+            except KeyError:
+                # server response is erroneus
                 print('server responded badly ... ')
-                retry =input('Try again : [Y/n] \n')
+                retry =input('Try again : [Y/n] \n') # prompt try again
                 if retry == 'Y':
                     continue
                 else:
+                    # cancel order
                     print('ORDER SUCCESSFULLY CANCELLED')
                     print('returning to the home page ...')
                     return
         else:
             # server didn't respond with anything
             print('nothing received from the server ... ')
-            retry =input('Try again : [Y/n] \n')
+            retry =input('Try again : [Y/n] \n') # prompt try again
             if retry == 'Y':
                 continue
             else:
+                # cancel order
                 print('ORDER SUCCESSFULLY CANCELLED')
                 print('returning to the home page ...')
                 return
@@ -271,8 +288,8 @@ def make_order_page_display(user_code,item, price):
     print()
     print('ORDERING - '+item+ '; TO '+address +' '+post_code+ '; TOTAL PRICE - '+str(price))
     print('PLEASE CONFIRM (Y/n)')
-    resp = input()
-    while resp not in ['Y', 'n']:
+    resp = input() # confirm order request
+    while resp not in ['Y', 'n']: # invalid response
         resp = input('Invalid choice ... try again (Y/n) ...\n')
 
     if resp == 'Y':
@@ -281,41 +298,45 @@ def make_order_page_display(user_code,item, price):
             response = make_order_request(user_code ,item, price, post_code)
             if response:
                 try:
-                    if response['valid'] == 1:
+                    if response['valid'] == 1: # if request is successful
                         print('ORDER CONFIRMED')
                         break
                         
-                    elif response['valid'] == 0:
+                    elif response['valid'] == 0: # if request is unsuccessful
                         # server side error
                         print(response['error']+' ... ')
-                        retry =input('Try again : [Y/n] \n')
+                        retry =input('Try again : [Y/n] \n') # prompt try again
                         if retry == 'Y':
                             continue
                         else:
+                            # cancel order
                             print('ORDER SUCCESSFULLY CANCELLED')
                             print('returning to the home page ...')
                             return
-                except:
-                    # server responded with unexpected json
+                except KeyError:
+                    # server response is erroneus
                     print('server responded badly ... ')
-                    retry =input('Try again : [Y/n] \n')
+                    retry =input('Try again : [Y/n] \n') # prompt try again
                     if retry == 'Y':
                         continue
                     else:
+                        # cancel order
                         print('ORDER SUCCESSFULLY CANCELLED')
                         print('returning to the home page ...')
                         return
             else:
                 # server didn't respond with anything
                 print('nothing received from the server ... ')
-                retry =input('Try again : [Y/n] \n')
+                retry =input('Try again : [Y/n] \n') # prompt try again
                 if retry == 'Y':
                     continue
                 else:
+                    # cancel order
                     print('ORDER SUCCESSFULLY CANCELLED')
                     print('returning to the home page ...')
                     return
-    else:
+    else: # if user input is 'n'
+        # cancel order
         print('ORDER SUCCESSFULLY CANCELLED')
 
     print()
@@ -324,7 +345,7 @@ def make_order_page_display(user_code,item, price):
     print('3. PRESS 3 + {ENTER} TO EXIT')
 
     resp = input()
-    while resp not in ['1','2','3']:
+    while resp not in ['1','2','3']: # invalid choice
         resp = input('Invalid choice ... try again ...\n')
         
     if resp == '1':
@@ -334,8 +355,12 @@ def make_order_page_display(user_code,item, price):
         return
     else:
         sys.exit()
-    
-# enter some arbitrary user code     
+        
+####################################################
+# Main code
+####################################################
+
+# ask the user for some arbritrary use code    
 print()
 print('---------')
 print('login ...')
@@ -348,36 +373,36 @@ while not user_code:
 # check the front-end-server is running by making a get motd request
 while True:
     # make server request
-    response = make_get_motd_request()
+    response = make_get_motd_request() 
     if response:
         try:
-            if response['valid'] == 1:
-                motd = response['motd']
+            if response['valid'] == 1: # if successful request
+                motd = response['motd'] # set the motd
                 while True:
-                    home_page_display(user_code)
+                    home_page_display(user_code) # display the home page
                 break
-            elif response['valid'] == 0:
+            elif response['valid'] == 0: # if unsuccessful request
                 # server side error
                 print(response['error']+' ... ')
-                retry =input('Try again : [Y/n] \n')
+                retry =input('Try again : [Y/n] \n') # prompt try again
                 if retry == 'Y':
                     continue
                 else:
                     print('exiting ...')
                     sys.exit()
-        except:
-            # server responded with unexpected json
+        except KeyError: 
+            # server response is erroneus
             print('server responded badly ... ')
-            retry =input('Try again : [Y/n] \n')
+            retry =input('Try again : [Y/n] \n') # prompt try again
             if retry == 'Y':
                 continue
             else:
                 print('exiting ...')
                 sys.exit()
-    else:
+    else: 
         # server didn't respond with anything
         print('nothing received from the server ... ')
-        retry =input('Try again : [Y/n] \n')
+        retry =input('Try again : [Y/n] \n') # prompt try again
         if retry == 'Y':
             continue
         else:
