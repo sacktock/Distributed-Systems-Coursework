@@ -3,6 +3,7 @@ import sys
 import Pyro4
 import json
 import requests
+from datetime import datetime
 
 server_namespaces = ['replica.server1', 'replica.server2', 'replica.server3']
 
@@ -41,7 +42,7 @@ class RequestHandler(object):
             print('trying', namespace)
             try:
                 request_handler = Pyro4.Proxy("PYRONAME:"+namespace)    
-                response = request_handler.make_order(user_code, item, price, post_code)
+                response = request_handler.make_order(user_code, item, price, str(datetime.now()), post_code)
                 if response['valid'] == 1:
                     break
                 else:

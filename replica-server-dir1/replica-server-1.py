@@ -4,7 +4,10 @@ import Pyro4
 import json
 import pandas as pd
 import csv
-from datetime import datetime
+from _thread import *
+import threading
+
+server_namespaces = ['replica.server2', 'replica.server3']
 
 # python -m Pyro4.naming
 
@@ -27,16 +30,17 @@ class RequestHandler(object):
         print('sending response back ...')
         return json.loads(response)
 
-    def make_order(self, user_code, item, price, post_code):
+    def make_order(self, user_code, item, price, date_time, post_code):
         print('processing a make_order request ... ')
         try:
             f = open('./orders.csv', 'a')
-            f.write(user_code+','+item+','+str(price)+','+str(datetime.now())+','+post_code+',CONFIRMED\n')
+            f.write(user_code+','+item+','+str(price)+','+date_time+','+post_code+',CONFIRMED\n')
             f.close()
         except:
             print('sending error back ...')
             return json.loads('{ "request" : "make_order", "valid" : 0, "error" : "failed to write to the orders.csv file"}')
-        print('sending response back ...')     
+        print('sending response back ...')
+        start_new_thread(update_orders(user_code, item, price, date_time, post_code))
         return json.loads('{ "request" : "make_order", "valid" : 1}')
 
     def get_orders(self, user_code):
@@ -74,6 +78,27 @@ class RequestHandler(object):
         print('sending response back ...') 
         return json.loads('{ "request" : "get_motd", "valid" : 1, "motd" : "'+motd+'" }')
 
+    def update_orders(self, user_code, item, price, date_time, post_code):
+        print('updating orders ... ')
+        for namespace in server_namespaces:
+            print('trying', namespace)
+            for _ in range(3):
+                try:
+                    request_handler = Pyro4.Proxy("PYRONAME:"+namespace)    
+                    response = request_handler.make_order(user_code, item, price, date_time, post_code)
+                    if response['valid'] == 1:
+                        print('order updated ... ')
+                        break
+                    else:
+                        print('order not updated ... ')
+                        continue
+                except:
+                    print('order not updated ... ')
+                    continue
+        print('orders updated ... ')
+
+
+        
 daemon = Pyro4.Daemon()                # make a Pyro daemon
 ns = Pyro4.locateNS()                  # find the name server
 uri = daemon.register(RequestHandler)   # register the greeting maker as a Pyro object
