@@ -1,4 +1,3 @@
-import socket
 import sys
 import json
 import Pyro4

@@ -1,9 +1,7 @@
-import socket
 import sys
 import Pyro4
 import json
 import pandas as pd
-import csv
 import os
 from _thread import *
 import threading
@@ -111,5 +109,5 @@ ns = Pyro4.locateNS()                  # find the name server
 uri = daemon.register(RequestHandler)   # register the request handler as a Pyro object
 ns.register("replica.server2", uri)   # register the object with a name in the name server
 
-print("replica-server-1 ready ... ")
+print("replica-server-2 ready ... ")
 daemon.requestLoop()

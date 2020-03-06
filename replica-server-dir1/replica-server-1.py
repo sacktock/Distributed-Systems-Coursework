@@ -1,9 +1,7 @@
-import socket
 import sys
 import Pyro4
 import json
 import pandas as pd
-import csv
 import os
 from _thread import *
 import threading
