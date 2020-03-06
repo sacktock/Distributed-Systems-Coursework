@@ -76,7 +76,7 @@ def home_page_display(user_code):
     elif resp == '2':
         order_page_display(user_code)
     else:
-        quit()
+        sys.exit()
 
 def menu_page_display(user_code):
     while True:
@@ -115,7 +115,7 @@ def menu_page_display(user_code):
                     elif resp == '1':
                         return
                     else:
-                        quit()
+                        sys.exit()
                 elif response['valid'] == 0:
                     # server side error
                     print(response['error']+' ... ')
@@ -184,7 +184,7 @@ def order_page_display(user_code):
                     elif resp == '2':
                         continue
                     else:
-                        quit()
+                        sys.exit()
                 elif response['valid'] == 0:
                     # server side error
                     print(response['error']+' ... ')
@@ -333,7 +333,7 @@ def make_order_page_display(user_code,item, price):
         order_page_display(user_code)
         return
     else:
-        quit()
+        sys.exit()
     
 # enter some arbitrary user code     
 print()
@@ -364,7 +364,7 @@ while True:
                     continue
                 else:
                     print('exiting ...')
-                    quit()
+                    sys.exit()
         except:
             # server responded with unexpected json
             print('server responded badly ... ')
@@ -373,7 +373,7 @@ while True:
                 continue
             else:
                 print('exiting ...')
-                quit()
+                sys.exit()
     else:
         # server didn't respond with anything
         print('nothing received from the server ... ')
@@ -382,4 +382,4 @@ while True:
             continue
         else:
             print('exiting ...')
-            quit()
+            sys.exit()

@@ -42,7 +42,7 @@ class RequestHandler(object):
             print('trying', namespace)
             try:
                 request_handler = Pyro4.Proxy("PYRONAME:"+namespace)    
-                response = request_handler.make_order(user_code, item, price, str(datetime.now()), post_code)
+                response = request_handler.make_order(user_code, item, price, str(datetime.now()), post_code, True)
                 if response['valid'] == 1:
                     break
                 else:
