@@ -19,6 +19,7 @@ server_namespaces = ['replica.server1', 'replica.server2', 'replica.server3']
 class RequestHandler(object):
 
     def get_menu(self):
+        global server_namespaces
         print('processing a get_menu request ... ')
         response = '' # construct the json repsonse
         for namespace in server_namespaces: # for each back end server
@@ -27,6 +28,8 @@ class RequestHandler(object):
                 request_handler = Pyro4.Proxy("PYRONAME:"+namespace)    
                 response = request_handler.get_menu()
                 if response['valid'] == 1: # if the request is successful break
+                    # rotate the server_namespaces list giving the primary server index 0 in the server_namespaces list
+                    server_namespaces = server_namespaces[server_namespaces.index(namespace):] + server_namespaces[:server_namespaces.index(namespace)]
                     break
                 else:
                     continue # try the next server
@@ -42,6 +45,7 @@ class RequestHandler(object):
             return json.loads('{ "request" : "get_menu", "valid" : 0, "error" : "server side error occured" }')
 
     def make_order(self, user_code, item, price, post_code):
+        global server_namespaces
         print('processing a make_order request ... ')
         response = '' # construct the json repsonse
         for namespace in server_namespaces: # for each back end server
@@ -50,6 +54,8 @@ class RequestHandler(object):
                 request_handler = Pyro4.Proxy("PYRONAME:"+namespace)    
                 response = request_handler.make_order(user_code, item, price, str(datetime.now()), post_code, True)
                 if response['valid'] == 1: # if the request is successful break
+                    # rotate the server_namespaces list giving the primary server index 0 in the server_namespaces list
+                    server_namespaces = server_namespaces[server_namespaces.index(namespace):] + server_namespaces[:server_namespaces.index(namespace)]
                     break
                 else:
                     continue # try the next server
@@ -65,6 +71,7 @@ class RequestHandler(object):
             return json.loads('{ "request" : "make_order", "valid" : 0, "error" : "server side error occured" }')
 
     def get_orders(self, user_code):
+        global server_namespaces
         print('processing a get_orders request ... ')
         response = '' # construct the json response
         for namespace in server_namespaces: # for each back end server
@@ -73,6 +80,8 @@ class RequestHandler(object):
                 request_handler = Pyro4.Proxy("PYRONAME:"+namespace)    
                 response = request_handler.get_orders(user_code)
                 if response['valid'] == 1: # if the request is successful break
+                    # rotate the server_namespaces list giving the primary server index 0 in the server_namespaces list
+                    server_namespaces = server_namespaces[server_namespaces.index(namespace):] + server_namespaces[:server_namespaces.index(namespace)]
                     break
                 else:
                     continue # try the next server
@@ -88,6 +97,7 @@ class RequestHandler(object):
             return json.loads('{ "request" : "get_orders", "valid" : 0, "error" : "server side error occured" }')
 
     def get_motd(self):
+        global server_namespaces
         print('processing a get_motd request ... ')
         response = '' # construct the json response
         for namespace in server_namespaces: # for each back end server
@@ -95,7 +105,9 @@ class RequestHandler(object):
             try:
                 request_handler = Pyro4.Proxy("PYRONAME:"+namespace)    
                 response = request_handler.get_motd()
-                if response['valid'] == 1: # if the request is successful break
+                if response['valid'] == 1: # if the request is successful break'
+                    # rotate the server_namespaces list giving the primary server index 0 in the server_namespaces list
+                    server_namespaces = server_namespaces[server_namespaces.index(namespace):] + server_namespaces[:server_namespaces.index(namespace)]
                     break
                 else:
                     continue # try the next server
