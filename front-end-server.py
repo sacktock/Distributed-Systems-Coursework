@@ -32,6 +32,8 @@ class RequestHandler(object):
                     server_namespaces = server_namespaces[server_namespaces.index(namespace):] + server_namespaces[:server_namespaces.index(namespace)]
                     break
                 else:
+                    print(reponse['error']+' ...')
+                    response = ''
                     continue # try the next server
             except: # no response from the back end server
                 response = ''
@@ -58,6 +60,8 @@ class RequestHandler(object):
                     server_namespaces = server_namespaces[server_namespaces.index(namespace):] + server_namespaces[:server_namespaces.index(namespace)]
                     break
                 else:
+                    print(reponse['error']+' ...')
+                    response = ''
                     continue # try the next server
             except: # no response from the back end server
                 response = ''
@@ -84,6 +88,8 @@ class RequestHandler(object):
                     server_namespaces = server_namespaces[server_namespaces.index(namespace):] + server_namespaces[:server_namespaces.index(namespace)]
                     break
                 else:
+                    print(reponse['error']+' ...')
+                    response = ''
                     continue # try the next server
             except: # no response from the back end server
                 response = ''
@@ -110,6 +116,8 @@ class RequestHandler(object):
                     server_namespaces = server_namespaces[server_namespaces.index(namespace):] + server_namespaces[:server_namespaces.index(namespace)]
                     break
                 else:
+                    print(reponse['error']+' ...')
+                    response = ''
                     continue # try the next server
             except: # no response from the back end server
                 response = ''
