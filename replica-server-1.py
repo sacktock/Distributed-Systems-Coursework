@@ -43,9 +43,9 @@ class RequestHandler(object):
         except:
             print('sending error back ...') # send error back if the file can't be appended to
             return json.loads('{ "request" : "make_order", "valid" : 0, "error" : "failed to write to the orders.csv file"}')
-        print('sending response back ...')
         if propagate_bit: # if propagate bit propagate the make order request to the back up servers
             start_new_thread(self.update_orders, (user_code, item, price, date_time, post_code)) # update orders in a new thread
+        print('sending response back ...')
         return json.loads('{ "request" : "make_order", "valid" : 1}') # return the json response
 
     def get_orders(self, user_code):
@@ -72,12 +72,12 @@ class RequestHandler(object):
     def get_motd(self):
         print('processing a get_motd request ... ')
         try:
-        		f = open(os.path.join('replica-server-1-resources/motd.txt'), 'r') # open the motd.txt file
-        		motd = f.read()
-        		f.close()
+            f = open(os.path.join('replica-server-1-resources/motd.txt'), 'r') # open the motd.txt file
+            motd = f.read()
+            f.close()
         except:
-        		print('sending error back ...') # send error back if the file can't be read
-        		return json.loads('{ "request" : "get_motd", "valid" : 0, "error" : "could not open motd.txt file" }')
+            print('sending error back ...') # send error back if the file can't be read
+            return json.loads('{ "request" : "get_motd", "valid" : 0, "error" : "could not open motd.txt file" }')
         print('sending response back ...') 
         return json.loads('{ "request" : "get_motd", "valid" : 1, "motd" : "'+motd+'" }') # return the json response
 

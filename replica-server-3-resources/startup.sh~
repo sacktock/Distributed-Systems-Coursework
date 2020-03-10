@@ -1,1 +1,0 @@
-xterm -e python3 replica-server-1.py

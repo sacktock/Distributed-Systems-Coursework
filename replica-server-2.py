@@ -43,9 +43,9 @@ class RequestHandler(object):
         except:
             print('sending error back ...') # send error back if the file can't be appended to
             return json.loads('{ "request" : "make_order", "valid" : 0, "error" : "failed to write to the orders.csv file"}')
-        print('sending response back ...')
         if propagate_bit: # if propagate bit propagate the make order request to the back up servers
             start_new_thread(self.update_orders, (user_code, item, price, date_time, post_code)) # update orders in a new thread
+        print('sending response back ...')
         return json.loads('{ "request" : "make_order", "valid" : 1}') # return the json response
 
     def get_orders(self, user_code):
