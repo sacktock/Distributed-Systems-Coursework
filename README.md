@@ -3,14 +3,14 @@ This project is built in python 3.6.3 and uses Pyro4 for client to server and se
 This project consists of 5 python scripts client.py, front-end-server.py, replica-server-1.py, replica-server-2.py, replica-server-3.py.  
 To successfully run this project and test its functionality follow the following steps in order:  
 - **note:** first ensure the following python modules are installed on your machine / on the version of python you are running: sys, json, Pyro4, requests, datetime, pandas, os, threading and _thread.
-- You will likely need to install Pyro4 on mira using **pip3 install Pyro4**.
+- **note:** if you are using mira you will likely need to install Pyro4 using **pip3 install Pyro4**.
 - Open a terminal shell and run the command **python -m Pyro4.naming**, or **python3 -m Pyro4.naming** if using linux / mira.
 - Open a terminal shell and navigate to this directory and launch the front end server using the command **python front-end-server.py**, or **python3 front-end-server.py** if using linux / mira.
-- Open a terminal shell and navigate to ./replica-server-dir1 and launch the primary server using the command **python replica-server-1.py**, or **python3 replica-server-1.py** if using linux / mira.
-- Open a terminal shell and navigate to ./replica-server-dir2 and launch the first back up server using the command **python replica-server-2.py**, or **python3 replica-server-2.py** if using linux / mira.
-- Open a terminal shell and navigate to ./replica-server-dir3 and launch the second back up server using the command **python replica-server-3.py**, or **python3 replica-server-3.py** if using linux / mira.
+- Open a terminal shell and navigate to this directory and launch the primary server using the command **python replica-server-1.py**, or **python3 replica-server-1.py** if using linux / mira.
+- Open a terminal shell and navigate to this directory and launch the first back up server using the command **python replica-server-2.py**, or **python3 replica-server-2.py** if using linux / mira.
+- Open a terminal shell and navigate to this directory and launch the second back up server using the command **python replica-server-3.py**, or **python3 replica-server-3.py** if using linux / mira.
 - Finally open the last terminal shell and navigate to this directory and run the client script using the command **python client.py**, or **python3 client.py** if using linux / mira.
-- **ALTERNATIVELY:** **(THIS SHOULD WORK ON MIRA)** run the python script **startup.py**, with **python3 startup.py** to start up all programs on xterm terminals.
+- **ALTERNATIVELY:** **(THIS SHOULD WORK ON MIRA NOT ON WINDOWS HOWEVER)** run the shell script **startup.sh**, with **./startup.sh** to start up all programs on xterm terminals (remember to do **chmod +x startup.sh**).
 - **note:** if non of the above approaches work try running each of the scripts from the python IDLE (you still need to run **python -m Pyro4.naming** from a terminal shell).
 
 # The client
@@ -23,6 +23,7 @@ The rest of the client program is very intuitive so follow the instructions and 
 # The servers
 The servers print to the console, each time they begin processing a request, each time they finish processing a request and each time they try to connect to another back-end server.  
 The console messages are again very intuitive so you can easily understand what is going on behind the scenes.
+**note:** each of the servers has their own resources (replica-server-1 has its resources in the replica-server-1-resources directory and so on). Each server has 3 files motd.txt, menu.csv, and orders.csv.
 
 # System design
 To view the system design open the **DataFlowDiagram.pdf** file.  
